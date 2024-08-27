@@ -27,14 +27,16 @@
           <el-input
             v-model="loginForm.username"
             placeholder="请输入账号"
+            @keydown.enter="onSubmit"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input
-            v-model="loginForm.password"
-            placeholder="请输入密码"
             type="password"
             show-password
+            v-model="loginForm.password"
+            placeholder="请输入密码"
+            @keydown.enter="onSubmit"
           ></el-input>
         </el-form-item>
         <br />

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
+import Outline from "@/components/Outline.vue";
 import StatusView from "@/views/StatusView.vue";
 import SettingView from "@/views/SettingView.vue";
 import DataDisplayView from "@/views/DataDisplayView.vue";
@@ -15,38 +16,37 @@ const router = createRouter({
     },
     {
       path: "/login",
-      name: "login",
       component: LoginView,
     },
     {
-      path: "/status",
-      name: "status",
-      component: StatusView,
-    },
-    {
-      path: "/setting",
-      name: "setting",
-      component: SettingView,
-    },
-    {
-      path: "/dataDisplay",
-      name: "dataDisplay",
-      component: DataDisplayView,
-    },
-    {
-      path: "/tool",
-      name: "tool",
-      component: ToolView,
-    },
-    {
-      path: "/deviceManage",
-      name: "deviceManage",
-      component: DeviceManageView,
+      path: "/",
+      component: Outline,
+      children: [
+        {
+          path: "status",
+          component: StatusView,
+        },
+        {
+          path: "setting",
+          component: SettingView,
+        },
+        {
+          path: "dataDisplay",
+          component: DataDisplayView,
+        },
+        {
+          path: "tool",
+          component: ToolView,
+        },
+        {
+          path: "deviceManage",
+          component: DeviceManageView,
+        },
+      ],
     },
     {
       path: "/about",
-      name: "about",
-      component: () => import("@/views/AboutView.vue"), // 懒加载，测试用页面
+      component: () => import("@/views/AboutView.vue"), // 懒加载，用于测试页面
     },
   ],
 });

@@ -1,17 +1,35 @@
-## Project Setup
-
 ```sh
-pnpm install
+npm ls -g
 ```
 
-### Compile and Hot-Reload for Development
+```sh
+npm outdated -g
+```
+
+```sh
+npm update -g pnpm
+```
+
+```sh
+pnpm update
+```
+
+```sh
+pnpm outdated
+```
+
+```sh
+pnpm update xxx@latest
+```
 
 ```sh
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
 ```sh
 pnpm build
+```
+
+```sh
+pnpm create vue@latest
 ```
