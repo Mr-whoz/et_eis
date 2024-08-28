@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.5.1",
     "@vitejs/plugin-vue": "^5.1.2",
     "@vue/tsconfig": "^0.5.1",
     "npm-run-all2": "^6.2.2",
