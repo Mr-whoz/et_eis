@@ -30,7 +30,10 @@
               type="primary"
               size="large"
               style="font-size: 2.5vh"
-              @click="setWorkStatus('continue')"
+              @click="
+                dialogVisible = true;
+                newAction = 'continue';
+              "
               >继续
             </el-button>
           </el-col>
@@ -39,7 +42,10 @@
               type="warning"
               size="large"
               style="font-size: 2.5vh"
-              @click="setWorkStatus('pause')"
+              @click="
+                dialogVisible = true;
+                newAction = 'pause';
+              "
               >暂停
             </el-button>
           </el-col>
@@ -48,7 +54,10 @@
               type="danger"
               size="large"
               style="font-size: 2.5vh"
-              @click="setWorkStatus('stop')"
+              @click="
+                dialogVisible = true;
+                newAction = 'stop';
+              "
               >停止
             </el-button>
           </el-col>
@@ -117,7 +126,7 @@
   <!-- ---------------------------------------- 第3行组件 开始 ---------------------------------------- -->
   <el-row :gutter="20">
     <el-col :span="12">
-      <el-card header="保护门限" style="height: 22.5vh">
+      <el-card header="设备保护门限" style="height: 22.5vh">
         <el-row>
           <el-col>电流峰值：{{ maxCurrent }} {{ maxCurrentUnit }}</el-col>
         </el-row>
@@ -145,6 +154,31 @@
     </el-col>
   </el-row>
   <!-- ---------------------------------------- 第3行组件 结束 ---------------------------------------- -->
+
+  <!-- 弹出对话框二次确认 -->
+  <el-dialog v-model="dialogVisible" title="二次确认" width="30vw">
+    <el-text size="large"
+      >{{
+        "当前状态：" +
+        workStatusText() +
+        "，确定要执行操作：" +
+        newActionText() +
+        " 吗？"
+      }}
+    </el-text>
+    <template #footer>
+      <el-button @click="dialogVisible = false">取消</el-button>
+      <el-button
+        type="primary"
+        @click="
+          dialogVisible = false;
+          setWorkStatus(newAction);
+        "
+      >
+        确认
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -155,7 +189,7 @@ import {
   SuccessFilled,
   WarningFilled,
 } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -331,6 +365,8 @@ const setWorkStatus = (newAction: string): void => {
       ElMessage.warning("变量workStatus设置出错！");
   }
 };
+
+const newAction = ref<string>("");
 /* **************************************** 第1行组件 结束 **************************************** */
 
 /* **************************************** 第2行组件 开始 **************************************** */
@@ -431,6 +467,36 @@ const usedSpaceUnit = ref<string>("M");
 const remainingSpace = ref<number>(0);
 const remainingSpaceUnit = ref<string>("M");
 /* **************************************** 第3行组件 结束 **************************************** */
+
+const dialogVisible = ref<boolean>(false);
+
+const workStatusText = (): string => {
+  switch (workStatus.value) {
+    case "idle":
+      return "空闲";
+    case "running":
+      return "运行";
+    case "paused":
+      return "暂停";
+    case "error":
+      return "异常";
+    default:
+      return "未知";
+  }
+};
+
+const newActionText = (): string => {
+  switch (newAction.value) {
+    case "continue":
+      return "继续";
+    case "pause":
+      return "暂停";
+    case "stop":
+      return "停止";
+    default:
+      return "未知";
+  }
+};
 </script>
 
 <style scoped></style>
