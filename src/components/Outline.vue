@@ -17,10 +17,10 @@
         <el-col>
           <el-menu
             router
-            active-text-color="#409EFF"
+            :default-active="$route.path"
             background-color="#304156"
-            default-active="/status"
             text-color="#FFFFFF"
+            active-text-color="#409EFF"
             style="height: 100%; border-radius: 5px"
           >
             <el-menu-item index="/status">
