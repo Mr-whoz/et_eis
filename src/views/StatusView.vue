@@ -11,6 +11,7 @@
           </el-col>
           <el-col :span="2">
             <el-tag
+              disable-transitions
               :type="workStatusTagType"
               size="large"
               style="font-size: 2.5vh"
@@ -81,24 +82,30 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col>显示周期：{{ displayInterval }}</el-col>
+              <el-col
+                >显示周期：{{ displayInterval }}
+                {{ displayIntervalUnit }}
+              </el-col>
             </el-row>
           </el-col>
           <el-col :span="12">
             <el-row>
-              <el-col>电流：{{ current }}</el-col>
+              <el-col>电流：{{ current }} {{ currentUnit }}</el-col>
             </el-row>
             <el-row>
-              <el-col>电压：{{ voltage }}</el-col>
+              <el-col>电压：{{ voltage }} {{ voltageUnit }}</el-col>
             </el-row>
             <el-row>
-              <el-col>功率：{{ power }}</el-col>
+              <el-col>功率：{{ power }} {{ powerUnit }}</el-col>
             </el-row>
             <el-row>
-              <el-col>频率：{{ frequency }}</el-col>
+              <el-col>频率：{{ frequency }} {{ frequencyUnit }}</el-col>
             </el-row>
             <el-row>
-              <el-col>采集周期：{{ collectInterval }}</el-col>
+              <el-col
+                >采集周期：{{ collectInterval }}
+                {{ collectIntervalUnit }}
+              </el-col>
             </el-row>
           </el-col>
         </el-row>
@@ -107,6 +114,37 @@
   </el-row>
   <!-- ---------------------------------------- 第2行组件 结束 ---------------------------------------- -->
   <br />
+  <!-- ---------------------------------------- 第3行组件 开始 ---------------------------------------- -->
+  <el-row :gutter="20">
+    <el-col :span="12">
+      <el-card header="保护门限" style="height: 22.5vh">
+        <el-row>
+          <el-col>电流峰值：{{ maxCurrent }} {{ maxCurrentUnit }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col>电压峰值：{{ maxVoltage }} {{ maxVoltageUnit }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col>功率峰值：{{ maxPower }} {{ maxPowerUnit }}</el-col>
+        </el-row>
+      </el-card>
+    </el-col>
+    <el-col :span="12">
+      <el-card header="设备参数" style="height: 22.5vh" s>
+        <el-row>
+          <el-col>设备型号：{{ deviceType }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col
+            >存储空间：已使用 {{ usedSpace }} {{ usedSpaceUnit }}，剩余
+            {{ remainingSpace }} {{ remainingSpaceUnit }}，总共
+            {{ totalSpace }} {{ totalSpaceUnit }}
+          </el-col>
+        </el-row>
+      </el-card>
+    </el-col>
+  </el-row>
+  <!-- ---------------------------------------- 第3行组件 结束 ---------------------------------------- -->
 </template>
 
 <script setup lang="ts">
@@ -296,6 +334,28 @@ const setWorkStatus = (newAction: string): void => {
 /* **************************************** 第1行组件 结束 **************************************** */
 
 /* **************************************** 第2行组件 开始 **************************************** */
+const current = ref<number>(0);
+const currentUnit = ref<string>("A");
+
+const voltage = ref<number>(0);
+const voltageUnit = ref<string>("V");
+
+const power = ref<number>(0);
+const powerUnit = ref<string>("W");
+
+const frequency = ref<number>(0);
+const frequencyUnit = ref<string>("Hz");
+
+const collectInterval = ref<number>(0);
+const collectIntervalUnit = ref<string>("毫秒");
+
+const displayInterval = ref<number>(0);
+const displayIntervalUnit = ref<string>("毫秒");
+
+const totalCycle = ref<number>(0);
+const currentCycle = ref<number>(0);
+const doneCycle = ref<number>(0);
+
 const currentTimestamp = ref<number>(0);
 const startTimestamp = ref<number>(0);
 const elapsedTimestamp = ref<number>(0);
@@ -350,8 +410,27 @@ const clearElapsedTime = (): void => {
   elapsedTimestamp.value = 0;
   elapsedTime.value = "";
 };
-
 /* **************************************** 第2行组件 结束 **************************************** */
+
+/* **************************************** 第3行组件 开始 **************************************** */
+const maxCurrent = ref<number>(0);
+const maxCurrentUnit = ref<string>("A");
+
+const maxVoltage = ref<number>(0);
+const maxVoltageUnit = ref<string>("V");
+
+const maxPower = ref<number>(0);
+const maxPowerUnit = ref<string>("W");
+
+const deviceType = ref<string>("ET-PEK010");
+
+const totalSpace = ref<number>(0);
+const totalSpaceUnit = ref<string>("M");
+const usedSpace = ref<number>(0);
+const usedSpaceUnit = ref<string>("M");
+const remainingSpace = ref<number>(0);
+const remainingSpaceUnit = ref<string>("M");
+/* **************************************** 第3行组件 结束 **************************************** */
 </script>
 
 <style scoped></style>

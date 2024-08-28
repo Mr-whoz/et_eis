@@ -13,7 +13,7 @@
       </el-row>
       <!-- 调整与上方的距离 -->
       <div style="margin: 1vh"></div>
-      <el-row style="height: 100vh">
+      <el-row style="height: 90vh">
         <el-col>
           <el-menu
             router
