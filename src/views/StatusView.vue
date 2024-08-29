@@ -160,9 +160,9 @@
     <el-text size="large"
       >{{
         "当前状态：" +
-        workStatusText() +
+        workStatusText +
         "，确定要执行操作：" +
-        newActionText() +
+        newActionText +
         " 吗？"
       }}
     </el-text>
@@ -182,14 +182,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, type Component } from "vue";
 import {
   CircleCloseFilled,
   Promotion,
   SuccessFilled,
   WarningFilled,
 } from "@element-plus/icons-vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -210,7 +210,7 @@ type workStatusType = "idle" | "running" | "paused" | "error";
 const workStatus = ref<workStatusType>("idle");
 
 // 动态返回icon组件
-const workStatusIcon = computed(() => {
+const workStatusIcon = computed((): Component => {
   switch (workStatus.value) {
     case "idle":
       return SuccessFilled;
@@ -226,7 +226,7 @@ const workStatusIcon = computed(() => {
 });
 
 // 动态返回icon颜色
-const workStatusIconColor = computed(() => {
+const workStatusIconColor = computed((): string => {
   switch (workStatus.value) {
     case "idle":
       return "#67C23A";
@@ -242,7 +242,7 @@ const workStatusIconColor = computed(() => {
 });
 
 // 动态返回tag文本
-const workStatusTag = computed(() => {
+const workStatusTag = computed((): string => {
   switch (workStatus.value) {
     case "idle":
       return "空闲";
@@ -258,7 +258,7 @@ const workStatusTag = computed(() => {
 });
 
 // 动态返回tag类型
-const workStatusTagType = computed(() => {
+const workStatusTagType = computed((): string => {
   switch (workStatus.value) {
     case "idle":
       return "success";
@@ -417,7 +417,7 @@ const setCurrentTimeAndElapsedTime = (): void => {
   }
 };
 
-let intervalId: number | undefined;
+let intervalId: number = 0;
 
 onMounted(() => {
   intervalId = window.setInterval(setCurrentTimeAndElapsedTime, 1000);
@@ -470,7 +470,7 @@ const remainingSpaceUnit = ref<string>("M");
 
 const dialogVisible = ref<boolean>(false);
 
-const workStatusText = (): string => {
+const workStatusText = computed((): string => {
   switch (workStatus.value) {
     case "idle":
       return "空闲";
@@ -483,9 +483,9 @@ const workStatusText = (): string => {
     default:
       return "未知";
   }
-};
+});
 
-const newActionText = (): string => {
+const newActionText = computed((): string => {
   switch (newAction.value) {
     case "continue":
       return "继续";
@@ -496,7 +496,7 @@ const newActionText = (): string => {
     default:
       return "未知";
   }
-};
+});
 </script>
 
 <style scoped></style>
