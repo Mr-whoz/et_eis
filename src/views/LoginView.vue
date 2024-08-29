@@ -55,7 +55,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 
-const loginForm = ref({
+const loginForm = ref<{ username: string; password: string }>({
   username: "",
   password: "",
 });
@@ -72,7 +72,7 @@ const adminPassword = "admin";
 const user1Username = "user1";
 const user1Password = "user1";
 
-const onSubmit = () => {
+const onSubmit = (): void => {
   if (
     (loginForm.value.username === adminUsername &&
       loginForm.value.password === adminPassword) ||
