@@ -1,0 +1,1 @@
+declare module "plotly.js-locales/zh-cn";

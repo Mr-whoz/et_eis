@@ -26,6 +26,9 @@ importers:
       plotly.js-dist-min:
         specifier: ^2.35.0
         version: 2.35.0
+      plotly.js-locales:
+        specifier: ^2.35.0
+        version: 2.35.0
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -558,6 +561,9 @@ packages:
 
   plotly.js-dist-min@2.35.0:
     resolution: {integrity: sha512-AWyhctrlBf9ZOnKkgdPWy4AOqiw2LYAJgvM33y4GTApiniiL2OjSwbGizDIb8uhlHbZpWEdnq+y8wnhxYY0yQw==}
+
+  plotly.js-locales@2.35.0:
+    resolution: {integrity: sha512-xHeyA0mjft7LTkPpeRiLVxHJa69ats8uvAs2FwdQZa2y2IdLUN8YIETIdZ0jb3AGuZJJDcFY4rODOWV4NjbgXw==}
 
   postcss@8.4.44:
     resolution: {integrity: sha512-Aweb9unOEpQ3ezu4Q00DPvvM2ZTUitJdNKeP/+uQgr1IBIqu574IaZoURId7BKtWMREwzKa9OgzPzezWGPWFQw==}
@@ -1109,6 +1115,8 @@ snapshots:
       typescript: 5.5.4
 
   plotly.js-dist-min@2.35.0: {}
+
+  plotly.js-locales@2.35.0: {}
 
   postcss@8.4.44:
     dependencies:
