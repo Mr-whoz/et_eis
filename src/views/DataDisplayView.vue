@@ -68,6 +68,7 @@
 
     <!-- ---------------------------------------- 第1行第2列组件 开始 ---------------------------------------- -->
     <el-col :span="20">
+      <!-- 此处的奈奎斯特图的样式与ToolView.vue中的相同，如果修改了要同步过去 -->
       <div ref="nyquistPlot"></div>
     </el-col>
     <!-- ---------------------------------------- 第1行第2列组件 结束 ---------------------------------------- -->
@@ -106,7 +107,6 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { ElMessageBox } from "element-plus";
 import Plotly from "plotly.js-dist-min";
 import locale from "plotly.js-locales/zh-cn";
 
