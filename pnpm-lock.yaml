@@ -14,6 +14,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.1(vue@3.5.0(typescript@5.5.4))
+      '@types/papaparse':
+        specifier: ^5.3.14
+        version: 5.3.14
       '@types/plotly.js-dist-min':
         specifier: ^2.3.4
         version: 2.3.4
@@ -23,6 +26,9 @@ importers:
       element-plus:
         specifier: ^2.8.1
         version: 2.8.1(vue@3.5.0(typescript@5.5.4))
+      papaparse:
+        specifier: ^5.4.1
+        version: 5.4.1
       pinia:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.5.4)(vue@3.5.0(typescript@5.5.4))
@@ -348,6 +354,9 @@ packages:
   '@types/node@22.5.3':
     resolution: {integrity: sha512-njripolh85IA9SQGTAqbmnNZTdxv7X/4OYGPz8tgy5JDr8MP+uDBa921GpYEoDDnwm0Hmn5ZPeJgiiSTPoOzkQ==}
 
+  '@types/papaparse@5.3.14':
+    resolution: {integrity: sha512-LxJ4iEFcpqc6METwp9f6BV6VVc43m6MfH0VqFosHvrUgfXiFe6ww7R3itkOQ+TCK6Y+Iv/+RnnvtRZnkc5Kc9g==}
+
   '@types/plotly.js-dist-min@2.3.4':
     resolution: {integrity: sha512-ISwLFV6Zs/v3DkaRFLyk2rvYAfVdnYP2VVVy7h+fBDWw52sn7sMUzytkWiN4M75uxr1uz1uiBioePTDpAfoFIg==}
 
@@ -539,6 +548,9 @@ packages:
     resolution: {integrity: sha512-Q+alQAGIW7ZhKcxLt8GcSi3h3ryheD6xnmXahkMRVM5LYmajcUrSITm8h+OPC9RYWMV2GR0Q1ntTUCfxaNoOJw==}
     engines: {node: ^14.18.0 || ^16.13.0 || >=18.0.0, npm: '>= 8'}
     hasBin: true
+
+  papaparse@5.4.1:
+    resolution: {integrity: sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==}
 
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
@@ -862,6 +874,10 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  '@types/papaparse@5.3.14':
+    dependencies:
+      '@types/node': 22.5.3
+
   '@types/plotly.js-dist-min@2.3.4':
     dependencies:
       '@types/plotly.js': 2.33.3
@@ -1107,6 +1123,8 @@ snapshots:
       pidtree: 0.6.0
       read-package-json-fast: 3.0.2
       shell-quote: 1.8.1
+
+  papaparse@5.4.1: {}
 
   path-browserify@1.0.1: {}
 
