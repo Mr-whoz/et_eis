@@ -691,6 +691,7 @@ const handleErrorDialogClose = (): void => {
 
 const startTest = (): void => {
   // 开始测试相关的代码
+  // 1、使用WebSocket发送JSON给服务器，内容为开始测试，功能详见需求文档2.3.4
 };
 </script>
 

@@ -32,11 +32,38 @@
       </el-card>
       <br />
       <div style="display: flex; justify-content: center">
-        <el-button size="large" type="primary" @click="">
+        <el-button size="large" type="primary" @click="dialogVisible = true">
           <el-text size="large" style="color: white">数据导出</el-text>
         </el-button>
       </div>
     </el-col>
+
+    <el-dialog v-model="dialogVisible" title="数据导出" width="30vw">
+      <el-row>
+        <el-col>
+          <el-radio-group v-model="dataAmount">
+            <el-radio value="all" size="large">全部导出</el-radio>
+            <el-radio value="time" size="large" disabled>按时间段导出</el-radio>
+          </el-radio-group>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col>
+          <el-checkbox-group v-model="dataFormat">
+            <el-checkbox label="csv 格式" value="csv" />
+            <el-checkbox label="xlsx 格式" value="xlsx" />
+            <el-checkbox label="xls 格式" value="xls" />
+            <el-checkbox label="txt 格式" value="txt" />
+          </el-checkbox-group>
+        </el-col>
+      </el-row>
+      <template #footer>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">
+          确认
+        </el-button>
+      </template>
+    </el-dialog>
     <!-- ---------------------------------------- 第1行第1列组件 结束 ---------------------------------------- -->
 
     <!-- ---------------------------------------- 第1行第2列组件 开始 ---------------------------------------- -->
@@ -79,6 +106,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import { ElMessageBox } from "element-plus";
 import Plotly from "plotly.js-dist-min";
 import locale from "plotly.js-locales/zh-cn";
 
@@ -99,6 +127,10 @@ const impedanceRealPartUnit = ref<string>("Ω");
 
 const impedanceImaginaryPart = ref<number>(0);
 const impedanceImaginaryPartUnit = ref<string>("Ω");
+
+const dialogVisible = ref<boolean>(false);
+const dataAmount = ref<string>("all");
+const dataFormat = ref<string[]>(["csv"]);
 /* **************************************** 第1行第1列组件 结束 **************************************** */
 
 /* **************************************** 第1行第2列组件 开始 **************************************** */
