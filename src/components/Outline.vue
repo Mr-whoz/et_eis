@@ -65,7 +65,7 @@
             </div>
             <br />
             <br />
-            <el-menu-item index="/login">
+            <el-menu-item @click="handleLogout">
               <el-icon>
                 <SwitchButton />
               </el-icon>
@@ -89,7 +89,8 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { useRouter, RouterView } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import {
   DataLine,
   Management,
@@ -99,6 +100,14 @@ import {
   SwitchButton,
   Tools,
 } from "@element-plus/icons-vue";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const handleLogout = (): void => {
+  authStore.logout();
+  router.push("/login");
+};
 </script>
 
 <style scoped></style>

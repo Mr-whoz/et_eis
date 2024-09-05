@@ -52,36 +52,34 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import { ElMessage } from "element-plus";
+
+// 用于生成预设密码的代码
+// import bcrypt from "bcryptjs";
+// const password = "yckj2024admin"; // yckj2024admin // user1
+// const salt = bcrypt.genSaltSync(4); // 最小是4，不能设置大了，否则校验很慢
+// const hashedPassword = bcrypt.hashSync(password, salt);
+// console.log(hashedPassword);
 
 const loginForm = ref<{ username: string; password: string }>({
   username: "",
   password: "",
 });
 
-const router = useRouter();
+const authStore = useAuthStore();
 
 const loginRules = {
   username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
   password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
 };
 
-const adminUsername = "admin";
-const adminPassword = "admin";
-const user1Username = "user1";
-const user1Password = "user1";
-
-const onSubmit = (): void => {
-  if (
-    (loginForm.value.username === adminUsername &&
-      loginForm.value.password === adminPassword) ||
-    (loginForm.value.username === user1Username &&
-      loginForm.value.password === user1Password)
-  ) {
-    router.push("/status");
-  } else {
-    ElMessage.error("登录失败！账号或密码错误！");
+const onSubmit = async (): Promise<void> => {
+  try {
+    await authStore.login(loginForm.value.username, loginForm.value.password);
+  } catch (error) {
+    console.log(error);
+    ElMessage.error("登录失败！请查看控制台错误信息！");
   }
 };
 </script>
