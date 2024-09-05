@@ -22,7 +22,7 @@
       </el-text>
       <br />
       <br />
-      <el-form :model="loginForm" :rules="loginRules">
+      <el-form :model="loginForm" :rules="loginRules" v-loading="loading">
         <el-form-item prop="username" label="账号">
           <el-input
             v-model="loginForm.username"
@@ -67,19 +67,24 @@ const loginForm = ref<{ username: string; password: string }>({
   password: "",
 });
 
-const authStore = useAuthStore();
-
 const loginRules = {
   username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
   password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
 };
 
+const loading = ref<boolean>(false);
+
+const authStore = useAuthStore();
+
 const onSubmit = async (): Promise<void> => {
+  loading.value = true; // 开启加载动画
+
   try {
     await authStore.login(loginForm.value.username, loginForm.value.password);
   } catch (error) {
-    console.log(error);
-    ElMessage.error("登录失败！请查看控制台错误信息！");
+    ElMessage.error("登录失败！" + error);
+  } finally {
+    loading.value = false; // 结束加载动画
   }
 };
 </script>
