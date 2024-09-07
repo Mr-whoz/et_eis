@@ -253,7 +253,19 @@
               />
             </el-select>
           </el-col>
-          <el-col :span="12"><!-- 纯占位，无意义 --></el-col>
+          <el-col v-if="stepMode === 'linearChange'" :span="8">
+            <el-input
+              v-model="stepValue"
+              size="large"
+              placeholder="请输入 步进值"
+            />
+          </el-col>
+          <el-col v-if="stepMode === 'linearChange'" :span="4"
+            ><!-- 纯占位，无意义 --></el-col
+          >
+          <el-col v-if="stepMode !== 'linearChange'" :span="12"
+            ><!-- 纯占位，无意义 --></el-col
+          >
         </el-row>
         <br />
         <el-row :gutter="20">
@@ -405,6 +417,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 /* **************************************** 第1行第1列组件 开始 **************************************** */
 const workMode = ref<string>("eis");
@@ -466,27 +481,24 @@ const notConstantModeSelected = computed((): boolean => {
 const handleConstantModeChange = (): void => {
   switch (constantMode.value) {
     case "constantCurrent":
-      unit.value = "A";
+      unit.value = "ampere";
       unitOption.value = currentUnitOption;
       break;
     case "constantVoltage":
-      unit.value = "V";
+      unit.value = "volt";
       unitOption.value = voltageUnitOption;
       break;
     case "constantPower":
-      unit.value = "W";
+      unit.value = "watt";
       unitOption.value = powerUnitOption;
       break;
-    default:
-      unit.value = "A";
-      unitOption.value = currentUnitOption;
   }
 };
 /* **************************************** 第1行第1列组件 结束 **************************************** */
 
 /* **************************************** 第1行第2列组件 开始 **************************************** */
 const currentPeak = ref<string>("");
-const currentPeakUnit = ref<string>("A");
+const currentPeakUnit = ref<string>("ampere");
 const currentPeakUnitOption = [
   { value: "ampere", label: "A" },
   { value: "kiloampere", label: "kA" },
@@ -494,7 +506,7 @@ const currentPeakUnitOption = [
 ];
 
 const voltagePeak = ref<string>("");
-const voltagePeakUnit = ref<string>("V");
+const voltagePeakUnit = ref<string>("volt");
 const voltagePeakUnitOption = [
   { value: "volt", label: "V" },
   { value: "kilovolt", label: "kV" },
@@ -502,7 +514,7 @@ const voltagePeakUnitOption = [
 ];
 
 const powerPeak = ref<string>("");
-const powerPeakUnit = ref<string>("W");
+const powerPeakUnit = ref<string>("watt");
 const powerPeakUnitOption = [
   { value: "watt", label: "W" },
   { value: "kilowatt", label: "kW" },
@@ -512,7 +524,7 @@ const powerPeakUnitOption = [
 
 /* **************************************** 第2行第1列组件 开始 **************************************** */
 const startFrequency = ref<string>("");
-const startFrequencyUnit = ref<string>("Hz");
+const startFrequencyUnit = ref<string>("hertz");
 const startFrequencyUnitOption = [
   { value: "hertz", label: "Hz" },
   { value: "kilohertz", label: "kHz" },
@@ -520,22 +532,24 @@ const startFrequencyUnitOption = [
 ];
 
 const endFrequency = ref<string>("");
-const endFrequencyUnit = ref<string>("Hz");
+const endFrequencyUnit = ref<string>("hertz");
 const endFrequencyUnitOption = [
   { value: "hertz", label: "Hz" },
   { value: "kilohertz", label: "kHz" },
   { value: "millihertz", label: "mHz" },
 ];
 
-const stepMode = ref<string>("对数变化");
+const stepMode = ref<string>("logarithmicChange");
 const stepModeOption = [
   { value: "logarithmicChange", label: "对数变化" },
   { value: "linearChange", label: "线性变化" },
   { value: "singlePoint", label: "单点" },
 ];
 
+const stepValue = ref<string>("");
+
 const frequencyPointPeriod = ref<string>("");
-const frequencyPointPeriodUnit = ref<string>("毫秒");
+const frequencyPointPeriodUnit = ref<string>("millisecond");
 const frequencyPointPeriodUnitOption = [
   { value: "millisecond", label: "毫秒" },
   { value: "second", label: "秒" },
@@ -547,7 +561,7 @@ const frequencyPointPeriodUnitOption = [
 const loopTimes = ref<string>("");
 
 const collectInterval = ref<string>("");
-const collectIntervalUnit = ref<string>("毫秒");
+const collectIntervalUnit = ref<string>("millisecond");
 const collectIntervalUnitOption = [
   { value: "millisecond", label: "毫秒" },
   { value: "microsecond", label: "微秒" },
@@ -555,7 +569,7 @@ const collectIntervalUnitOption = [
 ];
 
 const displayInterval = ref<string>("");
-const displayIntervalUnit = ref<string>("秒");
+const displayIntervalUnit = ref<string>("second");
 const displayIntervalUnitOption = [
   { value: "second", label: "秒" },
   { value: "millisecond", label: "毫秒" },
@@ -689,9 +703,136 @@ const handleErrorDialogClose = (): void => {
   errorMessage.value = [];
 };
 
+const adjustValueByUnit = (value: number, unit: string): number => {
+  switch (unit) {
+    case "kiloampere":
+    case "kilovolt":
+    case "kilowatt":
+    case "kilohertz":
+    case "second":
+      return value * 1000;
+    case "milliampere":
+    case "millivolt":
+    case "milliwatt":
+    case "millihertz":
+    case "microsecond":
+      return value / 1000;
+    default:
+      return value;
+  }
+};
+
+const adjustValueByType = (value: number, valueType: string): number => {
+  switch (valueType) {
+    case "rootMeanSquareValue":
+      return value * Math.sqrt(2);
+    case "peakToPeakValue":
+      return value / 2;
+    default:
+      return value;
+  }
+};
+
+const createSettingJson = (): string => {
+  const jsonObject: { [key: string]: any } = {};
+
+  // 工作模式
+  if (workMode.value === "eis") {
+    jsonObject["mode"] = "eis";
+  } else if (workMode.value === "constant") {
+    switch (constantMode.value) {
+      // 恒流
+      case "constantCurrent":
+        jsonObject["mode"] = "cc";
+        break;
+      // 恒压
+      case "constantVoltage":
+        jsonObject["mode"] = "cv";
+        break;
+      // 恒功率
+      case "constantPower":
+        jsonObject["mode"] = "cp";
+        break;
+    }
+
+    let tmpValue = parseFloat(value.value); // 值
+    tmpValue = adjustValueByUnit(tmpValue, unit.value); // 单位
+    tmpValue = adjustValueByType(tmpValue, valueType.value); // 值类型
+    jsonObject["modeIdentifier"] = tmpValue;
+  }
+
+  // 电流峰值
+  jsonObject["currentPeak"] = adjustValueByUnit(
+    parseFloat(currentPeak.value),
+    currentPeakUnit.value,
+  );
+
+  // 电压峰值
+  jsonObject["voltagePeak"] = adjustValueByUnit(
+    parseFloat(voltagePeak.value),
+    voltagePeakUnit.value,
+  );
+
+  // 功率峰值
+  jsonObject["powerPeak"] = adjustValueByUnit(
+    parseFloat(powerPeak.value),
+    powerPeakUnit.value,
+  );
+
+  // 起始频率
+  jsonObject["startFrequency"] = adjustValueByUnit(
+    parseFloat(startFrequency.value),
+    startFrequencyUnit.value,
+  );
+
+  // 终止频率
+  jsonObject["endFrequency"] = adjustValueByUnit(
+    parseFloat(endFrequency.value),
+    endFrequencyUnit.value,
+  );
+
+  switch (stepMode.value) {
+    // 对数变化
+    case "logarithmicChange":
+      jsonObject["stepMode"] = 1;
+      break;
+    // 线性变化
+    case "linearChange":
+      jsonObject["stepMode"] = 2;
+      jsonObject["stepSize"] = parseFloat(stepValue.value); // 步进值
+      break;
+    // 单点
+    case "singlePoint":
+      jsonObject["stepMode"] = 3;
+      break;
+  }
+
+  // 频点周期
+  jsonObject["frequencyPointPeriod"] = adjustValueByUnit(
+    parseFloat(frequencyPointPeriod.value),
+    frequencyPointPeriodUnit.value,
+  );
+
+  // 循环次数
+  jsonObject["loopTimes"] = parseInt(loopTimes.value);
+
+  // 采集周期
+  jsonObject["collectInterval"] = adjustValueByUnit(
+    parseFloat(collectInterval.value),
+    collectIntervalUnit.value,
+  );
+
+  // 显示周期不用传给服务器
+
+  return JSON.stringify(jsonObject);
+};
+
 const startTest = (): void => {
   // 开始测试相关的代码
   // 1、使用WebSocket发送JSON给服务器，内容为开始测试，功能详见需求文档2.3.4
+  if (authStore.websocket) {
+    (authStore.websocket as WebSocket).send(createSettingJson());
+  }
 };
 </script>
 
