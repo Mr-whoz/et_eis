@@ -182,7 +182,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type Component } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  type Component,
+  watch,
+} from "vue";
 import {
   CircleCloseFilled,
   Promotion,
@@ -207,7 +214,17 @@ const setEndWorkTime = (): void => {};
 
 /* **************************************** 第1行组件 开始 **************************************** */
 type workStatusType = "idle" | "running" | "paused" | "error";
-const workStatus = ref<workStatusType>("idle");
+
+// 定义 workStatus 的时候，先从 localStorage 获取
+const storedWorkStatus = localStorage.getItem(
+  "workStatus",
+) as workStatusType | null;
+const workStatus = ref<workStatusType>(storedWorkStatus || "idle");
+
+// 监听 workStatus 的变化，将其保存到 localStorage
+watch(workStatus, (newStatus) => {
+  localStorage.setItem("workStatus", newStatus);
+});
 
 // 动态返回icon组件
 const workStatusIcon = computed((): Component => {
@@ -280,11 +297,7 @@ const setWorkStatus = (newAction: string): void => {
     case "idle":
       switch (newAction) {
         case "continue":
-          ElMessage.success("开始测试");
-          workStatus.value = "running";
-          shouldSetElapsedTime.value = true;
-          setStartWorkTime();
-          // 开始测试相关的代码
+          ElMessage("当前是空闲状态，无需继续");
           break;
         case "pause":
           ElMessage("当前是空闲状态，无需暂停");

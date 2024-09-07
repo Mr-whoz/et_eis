@@ -422,23 +422,35 @@ import { useAuthStore } from "@/stores/auth";
 const authStore = useAuthStore();
 
 /* **************************************** 第1行第1列组件 开始 **************************************** */
-const workMode = ref<string>("eis");
+const workMode = computed({
+  get: () => authStore.workMode,
+  set: (value: string) => (authStore.workMode = value),
+});
 
-const constantMode = ref<string>("");
+const constantMode = computed({
+  get: () => authStore.constantMode,
+  set: (value: string) => (authStore.constantMode = value),
+});
 const constantModeOption = [
   { value: "constantCurrent", label: "恒流 CC" },
   { value: "constantVoltage", label: "恒压 CV" },
   { value: "constantPower", label: "恒功率 CP" },
 ];
 
-const valueType = ref<string>("");
+const valueType = computed({
+  get: () => authStore.valueType,
+  set: (value: string) => (authStore.valueType = value),
+});
 const valueTypeOption = [
   { value: "peakValue", label: "峰值" },
   { value: "rootMeanSquareValue", label: "有效值" },
   { value: "peakToPeakValue", label: "峰峰值" },
 ];
 
-const value = ref<string>("");
+const value = computed({
+  get: () => authStore.value,
+  set: (newValue: string) => (authStore.value = newValue),
+});
 
 interface Option {
   value: string;
@@ -463,12 +475,14 @@ const powerUnitOption: Option[] = [
   { value: "milliwatt", label: "mW" },
 ];
 
-const unit = ref<string>("");
-const unitOption = ref<Option[]>([
-  { value: "", label: "" },
-  { value: "", label: "" },
-  { value: "", label: "" },
-]);
+const unit = computed({
+  get: () => authStore.unit,
+  set: (value: string) => (authStore.unit = value),
+});
+const unitOption = computed({
+  get: () => authStore.unitOption,
+  set: (value: Option[]) => (authStore.unitOption = value),
+});
 
 const isEISSelected = computed((): boolean => {
   return workMode.value === "eis";
@@ -481,40 +495,59 @@ const notConstantModeSelected = computed((): boolean => {
 const handleConstantModeChange = (): void => {
   switch (constantMode.value) {
     case "constantCurrent":
-      unit.value = "ampere";
+      unit.value = authStore.unit;
       unitOption.value = currentUnitOption;
       break;
     case "constantVoltage":
-      unit.value = "volt";
+      unit.value = authStore.unit;
       unitOption.value = voltageUnitOption;
       break;
     case "constantPower":
-      unit.value = "watt";
+      unit.value = authStore.unit;
       unitOption.value = powerUnitOption;
       break;
   }
 };
+
 /* **************************************** 第1行第1列组件 结束 **************************************** */
 
 /* **************************************** 第1行第2列组件 开始 **************************************** */
-const currentPeak = ref<string>("");
-const currentPeakUnit = ref<string>("ampere");
+const currentPeak = computed({
+  get: () => authStore.currentPeak,
+  set: (value: string) => (authStore.currentPeak = value),
+});
+const currentPeakUnit = computed({
+  get: () => authStore.currentPeakUnit,
+  set: (value: string) => (authStore.currentPeakUnit = value),
+});
 const currentPeakUnitOption = [
   { value: "ampere", label: "A" },
   { value: "kiloampere", label: "kA" },
   { value: "milliampere", label: "mA" },
 ];
 
-const voltagePeak = ref<string>("");
-const voltagePeakUnit = ref<string>("volt");
+const voltagePeak = computed({
+  get: () => authStore.voltagePeak,
+  set: (value: string) => (authStore.voltagePeak = value),
+});
+const voltagePeakUnit = computed({
+  get: () => authStore.voltagePeakUnit,
+  set: (value: string) => (authStore.voltagePeakUnit = value),
+});
 const voltagePeakUnitOption = [
   { value: "volt", label: "V" },
   { value: "kilovolt", label: "kV" },
   { value: "millivolt", label: "mV" },
 ];
 
-const powerPeak = ref<string>("");
-const powerPeakUnit = ref<string>("watt");
+const powerPeak = computed({
+  get: () => authStore.powerPeak,
+  set: (value: string) => (authStore.powerPeak = value),
+});
+const powerPeakUnit = computed({
+  get: () => authStore.powerPeakUnit,
+  set: (value: string) => (authStore.powerPeakUnit = value),
+});
 const powerPeakUnitOption = [
   { value: "watt", label: "W" },
   { value: "kilowatt", label: "kW" },
@@ -523,33 +556,57 @@ const powerPeakUnitOption = [
 /* **************************************** 第1行第2列组件 结束 **************************************** */
 
 /* **************************************** 第2行第1列组件 开始 **************************************** */
-const startFrequency = ref<string>("");
-const startFrequencyUnit = ref<string>("hertz");
+const startFrequency = computed({
+  get: () => authStore.startFrequency,
+  set: (value: string) => (authStore.startFrequency = value),
+});
+const startFrequencyUnit = computed({
+  get: () => authStore.startFrequencyUnit,
+  set: (value: string) => (authStore.startFrequencyUnit = value),
+});
 const startFrequencyUnitOption = [
   { value: "hertz", label: "Hz" },
   { value: "kilohertz", label: "kHz" },
   { value: "millihertz", label: "mHz" },
 ];
 
-const endFrequency = ref<string>("");
-const endFrequencyUnit = ref<string>("hertz");
+const endFrequency = computed({
+  get: () => authStore.endFrequency,
+  set: (value: string) => (authStore.endFrequency = value),
+});
+const endFrequencyUnit = computed({
+  get: () => authStore.endFrequencyUnit,
+  set: (value: string) => (authStore.endFrequencyUnit = value),
+});
 const endFrequencyUnitOption = [
   { value: "hertz", label: "Hz" },
   { value: "kilohertz", label: "kHz" },
   { value: "millihertz", label: "mHz" },
 ];
 
-const stepMode = ref<string>("logarithmicChange");
+const stepMode = computed({
+  get: () => authStore.stepMode,
+  set: (value: string) => (authStore.stepMode = value),
+});
 const stepModeOption = [
   { value: "logarithmicChange", label: "对数变化" },
   { value: "linearChange", label: "线性变化" },
   { value: "singlePoint", label: "单点" },
 ];
 
-const stepValue = ref<string>("");
+const stepValue = computed({
+  get: () => authStore.stepValue,
+  set: (value: string) => (authStore.stepValue = value),
+});
 
-const frequencyPointPeriod = ref<string>("");
-const frequencyPointPeriodUnit = ref<string>("millisecond");
+const frequencyPointPeriod = computed({
+  get: () => authStore.frequencyPointPeriod,
+  set: (value: string) => (authStore.frequencyPointPeriod = value),
+});
+const frequencyPointPeriodUnit = computed({
+  get: () => authStore.frequencyPointPeriodUnit,
+  set: (value: string) => (authStore.frequencyPointPeriodUnit = value),
+});
 const frequencyPointPeriodUnitOption = [
   { value: "millisecond", label: "毫秒" },
   { value: "second", label: "秒" },
@@ -558,18 +615,33 @@ const frequencyPointPeriodUnitOption = [
 /* **************************************** 第2行第1列组件 结束 **************************************** */
 
 /* **************************************** 第2行第2列组件 开始 **************************************** */
-const loopTimes = ref<string>("");
+const loopTimes = computed({
+  get: () => authStore.loopTimes,
+  set: (value: string) => (authStore.loopTimes = value),
+});
 
-const collectInterval = ref<string>("");
-const collectIntervalUnit = ref<string>("millisecond");
+const collectInterval = computed({
+  get: () => authStore.collectInterval,
+  set: (value: string) => (authStore.collectInterval = value),
+});
+const collectIntervalUnit = computed({
+  get: () => authStore.collectIntervalUnit,
+  set: (value: string) => (authStore.collectIntervalUnit = value),
+});
 const collectIntervalUnitOption = [
   { value: "millisecond", label: "毫秒" },
   { value: "microsecond", label: "微秒" },
   { value: "second", label: "秒" },
 ];
 
-const displayInterval = ref<string>("");
-const displayIntervalUnit = ref<string>("second");
+const displayInterval = computed({
+  get: () => authStore.displayInterval,
+  set: (value: string) => (authStore.displayInterval = value),
+});
+const displayIntervalUnit = computed({
+  get: () => authStore.displayIntervalUnit,
+  set: (value: string) => (authStore.displayIntervalUnit = value),
+});
 const displayIntervalUnitOption = [
   { value: "second", label: "秒" },
   { value: "millisecond", label: "毫秒" },
@@ -833,6 +905,12 @@ const startTest = (): void => {
   if (authStore.websocket) {
     (authStore.websocket as WebSocket).send(createSettingJson());
   }
+
+  // 修改 workStatus 为 running
+  authStore.workStatus = "running";
+
+  // 调用 setStartWorkTime 清除并设置开始时间
+  setStartWorkTime();
 };
 </script>
 

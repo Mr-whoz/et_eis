@@ -38,7 +38,7 @@
         type="primary"
         @click="
           templateDownload = false;
-          downloadTemplate();
+          confirmDownload();
         "
         >确认
       </el-button>
@@ -49,12 +49,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/auth";
 import Papa from "papaparse";
 import * as XLSX from "@e965/xlsx";
 import Plotly from "plotly.js-dist-min";
 import locale from "plotly.js-locales/zh-cn";
 
 Plotly.register(locale);
+
+const authStore = useAuthStore();
+const nyquistPlot = ref<HTMLDivElement | null>(null);
 
 /* **************************************** 第1行第1列组件 开始 **************************************** */
 const allowedFileExtension: string[] = ["csv", "xlsx", "xls", "txt"];
@@ -73,16 +77,12 @@ const beforeUpload = async (file: File): Promise<boolean> => {
 
   switch (fileExtension) {
     case "csv":
+    case "txt":
       await handleCsvAndTxt(file);
       break;
     case "xlsx":
-      await handleExcel(file);
-      break;
     case "xls":
       await handleExcel(file);
-      break;
-    case "txt":
-      await handleCsvAndTxt(file);
       break;
     default:
       ElMessage.error(
@@ -123,15 +123,14 @@ const parseString = (text: string): void => {
         zm: parseFloat(row["Zm(mΩ)"]),
       }));
 
-      trace.text = [];
-      trace.x = [];
-      trace.y = [];
+      const xData = data.map((item) => item.zr);
+      const yData = data.map((item) => -item.zm); // 注意阻抗虚部要取相反数
+      const textData = data.map((item) => item.frequency);
 
-      data.forEach((item) => {
-        trace.text.push(item["frequency"]);
-        trace.x.push(item["zr"]);
-        trace.y.push(-item["zm"]); // 注意阻抗虚部要取相反数
-      });
+      authStore.updateNyquistPlotData(xData, yData, textData);
+
+      // 保存数据到 localStorage
+      authStore.saveNyquistPlotData();
 
       drawNyquistPlot();
     },
@@ -140,15 +139,44 @@ const parseString = (text: string): void => {
 /* **************************************** 第1行第1列组件 结束 **************************************** */
 
 /* **************************************** 第1行第2列组件 开始 **************************************** */
+const drawNyquistPlot = (): void => {
+  if (nyquistPlot.value) {
+    const trace = {
+      x: authStore.nyquistPlotData.x,
+      y: authStore.nyquistPlotData.y,
+      text: authStore.nyquistPlotData.text,
+      mode: "lines+markers",
+      hovertemplate: "Zr: %{x}<br />Zm: %{y}<br />freq: %{text}<extra></extra>",
+    };
+
+    const layout = {
+      title: "奈奎斯特图",
+      xaxis: { title: "阻抗实部 Zr (mΩ)" },
+      yaxis: { title: "阻抗虚部的相反数 -Zm (mΩ)" },
+      aspectratio: { x: 1, y: 1 },
+      font: { size: 14 },
+    };
+
+    const config: Partial<Plotly.Config> = {
+      displayModeBar: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: ["select2d", "lasso2d"],
+      locale: "zh-CN",
+    };
+
+    Plotly.newPlot(nyquistPlot.value, [trace], layout, config);
+  }
+};
+
 const templateDownload = ref<boolean>(false);
 const dataFormat = ref<string[]>(["csv"]);
 
-const downloadTemplate = (): void => {
-  // 支持多选的，每个选项都要下载
+const confirmDownload = (): void => {
+  templateDownload.value = false;
   dataFormat.value.forEach((format) => {
-    const link: HTMLAnchorElement = document.createElement("a"); // 新建<a>标签
-    link.href = `/eis_template/eis_template.${format}`; // 这是模板字符串的写法。直接从public目录下获取文件
-    link.setAttribute("download", `eis_template.${format}`); // 设置下载属性，设置下载的文件名
+    const link = document.createElement("a");
+    link.href = `/eis_template/eis_template.${format}`;
+    link.setAttribute("download", `eis_template.${format}`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -156,53 +184,10 @@ const downloadTemplate = (): void => {
 };
 /* **************************************** 第1行第2列组件 结束 **************************************** */
 
-/* **************************************** 第2行组件 开始 **************************************** */
-const nyquistPlot = ref<HTMLDivElement>();
-
-const trace: {
-  x: number[];
-  y: number[];
-  mode: string;
-  text: number[];
-  hovertemplate: string;
-} = {
-  x: [],
-  // 注意阻抗虚部要取相反数
-  y: [],
-  mode: "lines+markers",
-  text: [],
-  hovertemplate: "Zr: %{x}<br />Zm: %{y}<br />freq: %{text}<extra></extra>",
-};
-
-// 待做：显式声明类型
-const layout = {
-  title: "奈奎斯特图",
-  xaxis: { title: "阻抗实部 Zr (mΩ)" },
-  yaxis: { title: "阻抗虚部的相反数 -Zm (mΩ)" },
-  aspectratio: { x: 1, y: 1 },
-  font: { size: 14 },
-};
-
-const config: Partial<Plotly.Config> = {
-  displayModeBar: true,
-  displaylogo: false,
-  modeBarButtonsToRemove: ["select2d", "lasso2d"],
-  toImageButtonOptions: {
-    scale: 2, // 将scale设置为2，图像将变得清晰
-  },
-  locale: "zh-CN",
-};
-
-const drawNyquistPlot = (): void => {
-  if (nyquistPlot.value) {
-    Plotly.newPlot(nyquistPlot.value, [trace], layout, config);
-  }
-};
-
 onMounted(() => {
+  authStore.loadNyquistPlotData();
   drawNyquistPlot();
 });
-/* **************************************** 第2行组件 结束 **************************************** */
 </script>
 
 <style scoped></style>

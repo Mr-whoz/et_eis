@@ -105,6 +105,9 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const handleLogout = (): void => {
+  // 清除所有 localStorage
+  localStorage.clear();
+
   authStore.logout();
   router.push("/login");
 };
