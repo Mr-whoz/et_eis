@@ -18,13 +18,13 @@
     "@types/plotly.js-dist-min": "^2.3.4",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",
-    "element-plus": "^2.8.1",
+    "element-plus": "^2.8.2",
     "papaparse": "^5.4.1",
     "pinia": "^2.2.2",
     "plotly.js-dist-min": "^2.35.0",
     "plotly.js-locales": "^2.35.0",
     "prettier": "^3.3.3",
-    "vue": "^3.5.2",
+    "vue": "^3.5.3",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
