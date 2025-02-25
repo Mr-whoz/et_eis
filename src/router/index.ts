@@ -14,10 +14,10 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      redirect: "/login",
+      redirect: "/login/",
     },
     {
-      path: "/login",
+      path: "/login/",
       component: LoginView,
     },
     {
@@ -44,6 +44,10 @@ const router = createRouter({
           path: "deviceManage",
           component: DeviceManageView,
         },
+        {
+          path: "login",
+          component: LoginView,
+        },
       ],
     },
   ],
@@ -55,14 +59,14 @@ router.beforeEach((to, from, next) => {
 
   if (!authStore.isLoggedIn) {
     // 如果用户未登录，那么任何页面都重定向到/login
-    if (to.path !== "/login") {
-      next("/login");
+    if (to.path !== "/login/") {
+      next("/login/");
     } else {
       next();
     }
   } else {
     // 如果用户已登录，那么页面/和/login重定向到/status
-    if (to.path === "/" || to.path === "/login") {
+    if (to.path === "/" || to.path === "/login/") {
       next("/status");
     } else {
       next();

@@ -58,6 +58,7 @@ import { ElMessage } from "element-plus";
 // 用于生成预设密码的代码
 // import bcrypt from "bcryptjs";
 // const password = "yckj2024admin"; // yckj2024admin // user1
+// const password = "user99"; // yckj2024admin // user1
 // const salt = bcrypt.genSaltSync(4); // 最小是4，不能设置大了，否则校验很慢
 // const hashedPassword = bcrypt.hashSync(password, salt);
 // console.log(hashedPassword);
