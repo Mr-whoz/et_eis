@@ -314,17 +314,17 @@ const updateTableData = (i : number) => {
   authStore.tableData = [...tableData.value]; // 更新 store 的数据
 };
 
-let count = 0; // 初始化计数器
-onMounted(() => {
-  authStore.tableData = [];
-      timer = setInterval(() => {
-        updateTableData(count);
-        count++; // 每次更新数据时增加计数器的值
-        if (count >= 50) {
-          clearInterval(timer); // 当计数器达到50时，清除定时器
-        }
-      }, 5); // 每5秒更新一次
-    });
+// let count = 0; // 初始化计数器
+// onMounted(() => {
+//   authStore.tableData = [];
+//       timer = setInterval(() => {
+//         updateTableData(count);
+//         count++; // 每次更新数据时增加计数器的值
+//         if (count >= 50) {
+//           clearInterval(timer); // 当计数器达到50时，清除定时器
+//         }
+//       }, 5); // 每5秒更新一次
+//     });
 
 
 const dialogVisible = ref<boolean>(false);    //二次  确认/取消  信号
@@ -810,8 +810,7 @@ if (data) {
       hovertemplate: "频率: %{text}<br />相位: %{y}<extra></extra>",
       // yaxis: "y",
       line: {
-        // dash: 'dash',
-        // color: fileColor,
+
       },
       marker: {
         // symbol: "triangle-up-open",

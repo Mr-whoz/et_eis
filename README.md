@@ -61,10 +61,10 @@ pnpm build
 ```sh
 pnpm create vue@latest
 ```
-外部py库（EIS）
+<!-- 外部py库（EIS）
 ```sh
 python setup.py install 
 ```
 ```sh
 pip install PyEIS==1.0.10
-```
+``` -->
