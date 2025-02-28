@@ -1335,7 +1335,7 @@ const adjustValueByType = (value: number, valueType: string): number => {
  * 1、转化工作模式，根据选择的工作模式以及恒压恒流 为相应的json字符串
  * 2、转化 电流峰值、 电压峰值、 功率峰值 为相应的json字符串
  * 3、根据 stepMode.value 转化为不同的json字符串
- * 3.2 、  Custommode和 liner 两种模式需要注意限制，不能超过41
+ * 3.2  Custommode和 liner 两种模式需要注意限制，不能超过41
   */   
 const createSettingJson = (): string => {
   const jsonObject: { [key: string]: any } = {};
@@ -1537,7 +1537,7 @@ const startTest =  (): void => {
   timeValue.value = Date.now();
 
   authStore.testStartTime = Math.floor(timeValue.value);
-  // localStorage.setItem("testStartTime", timeValue.value.toString());  
+;  
    
 };
 </script>

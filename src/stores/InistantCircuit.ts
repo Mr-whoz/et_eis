@@ -6,8 +6,10 @@ import { ref, watch } from 'vue';
 const math = create(all);
 
 // 定义电路模型类型       
- type CircuitModel = "Rs_C" |"Rp_C" | "Rs_(CRp)"|"Rs_L"|"Rs_CPE"|"Rs_(CPERp)"|"Rp_CPE";
+type CircuitModel = "Rs_C" | "Rp_C" | "Rs_(CRp)" | "Rs_L" | "Rs_CPE" | "Rs_(CPERp)" | "Rp_CPE";
+ 
 // 定义电路模型的拟合函数
+//传入参数为对象-----电路类型，自动找到匹配的电路计算实部虚部 ，返回计算出的阻抗的实部和虚部
 const circuitFitFunctions: { [key in CircuitModel]: Function } = {
   "Rs_C": (params: { Rs: number; C: number; }, f: number) => {
     const w = 2 * Math.PI * f; // 角频率
@@ -87,7 +89,8 @@ const circuitFitFunctions: { [key in CircuitModel]: Function } = {
 };
 
 
-// 将数组转换为对象
+//传入参数1：电路类型 传入参数2：字典数组
+//根据电路类型，生成对象类型，以电路参数作为键，储存到字典数组parms[]中作为值 生成对应的对象类型，并返回；
 function convertArrayToObject(model: CircuitModel, params: number[]): { [key: string]: number } {
   let paramsObject: { [key: string]: number } = {};
 
@@ -513,6 +516,9 @@ function calculateMean(numbers: number[]): number {
 
 import { defineStore } from "pinia";
 
+
+
+//export到成绩电路拟合参数到外部，然后可以在ToolView.vue中使用
 export const circuitStoreData = defineStore("circuitData", () => {
 //保存数据
 const startSimFrequency = ref<number>(0.01);

@@ -420,21 +420,8 @@
       <el-button type="primary" @click="resetIPAddress">确定</el-button>
     </template>
   </el-dialog>
-  <el-dialog title="重新设置IP地址" v-model="testDialogVisible" width="25vw">
 
-    <el-select v-model="checkDataTest" placeholder="测试发送">
-          <el-option 
-            v-for="item in dataTest" 
-            :label="item" 
-            :value="item" ></el-option> 
-         </el-select>
-         <el-button type="primary" @click="
-          testDialogVisible = false;
-          TestButtom();"
-        >确定
-      </el-button>
-  </el-dialog>
- 
+
   <!-- 隐藏的文件输入框 -->
   <input
     ref="fileInput"
@@ -621,6 +608,7 @@ const openDeleteUserDialog = async (): Promise<void> => {
     await authStore.fetchFileContent("/login/user_list.txt")
   ).filter((user) => user !== "admin");
 };
+
 
 const deleteUser = async (): Promise<void> => {
   loading.value = true;
@@ -1112,7 +1100,6 @@ const deleteFiles = async (files: string[]) => {
     }
     
 
-
  /**
  * 函数作用：点击删除按钮时触发的函数
  * 1、确认用户是否选择需要删除的的文件，如果没有则selectDeleteFiles.value.length === 0，提示报错
@@ -1146,7 +1133,7 @@ const newFileName = ref<string>();//更新文件的新文件名
  * 函数作用：确认重命名功能按钮时触发的功能
  * 1、确认用户是否选择文件名输入新文件名，没有则提示警告
  * 2、遍历循环，获取tempKeyFilesToDownload的用户名和对应的文件名，进行匹配{username：userFiles}
- * 3.username：userFiles里面包含了选择要改名的文件selectRenameFileName，则生成renameFiles
+ * 3、username：userFiles里面包含了选择要改名的文件selectRenameFileName，则生成renameFiles
  * 4、将renameFiles填充到func1，func1填充到Func，Func填充到func，最后通过websocket发送给后端
  * 5、更新文件列表
   */   
@@ -1324,27 +1311,6 @@ const confirmReset = () => {
 };
 /* *******************************测试复位 结束**************************************** */
 
-
-// 确认重启
-const testDialogVisible = ref(false);
- 
-const dataTest = ["4","22","42","101","121","231","560"];
-const checkDataTest = ref<string>("");
-const TestButtom = () => {
-  if (authStore.websocket) {
-    const func: { [key: string]: any } = {};
-    func["ASD"] = checkDataTest.value;
-    const Func: { [key: string]: any } = {};
-    Func["deviceManagement"] = func;
-    const Func1: { [key: string]: any } = {};
-    Func1["func"] = Func;
-    (authStore.websocket as WebSocket).send(
-      JSON.stringify(Func1),
-    );
-    ElMessage.success("重启请求已发送！");
-  }
-  testDialogVisible.value = false;
-};
 
 </script>
 
