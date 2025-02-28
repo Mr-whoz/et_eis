@@ -218,8 +218,11 @@ const impedanceImaginaryPartUnit = ref<string>("欧姆/Ω");
 
 
 const authStore = useAuthStore(); // 获取 authStore 实例
-  
 
+
+//显示视图的数据表
+//获取并且过滤无效值，遍历数组，将所有属性为空的无效数据过滤掉，然后再映射出新的数组，确保所有属性都有值
+//在首位插入数据，使得最新的数据放到最前面的地方
 const tableData = computed({
   get: () => {
     if (!Array.isArray(authStore.tableData)) {
@@ -288,7 +291,7 @@ const tableData = computed({
 });
 
 
-// -------------------------------模拟更新数据逻辑-后续确认接收数据完善后可以修改此段内容----------------------------------------------------
+// -------------------------------模拟更新数据逻辑-后续确认接收数据完善后可以删除此段内容----------------------------------------------------
 let timer: any;
 const updateTableData = (i : number) => {
   const newData = {

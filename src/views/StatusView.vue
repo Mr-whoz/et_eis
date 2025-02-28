@@ -264,8 +264,15 @@ const workStatusTag = computed((): string => {
  
   }
 });
-
-// 动态计算 tag 类型
+/**
+ * 动态计算 tag 类型----根据workStatus.value值自动计算  computed函数
+ * 空闲：success
+ * 完成：accomplish
+ * 运行：primary
+ * 暂停：warning
+ * 异常：danger 
+ * 
+ */
 const workStatusTagType = computed((): string => {
   switch (workStatus.value) {
     case "idle":
@@ -469,7 +476,15 @@ watch(elapsedTime, (newStatus) => {
   localStorage.setItem("elapsedTime", newStatus);
 });
 const startTime = ref<string>("");
-//当前时间的刷新
+
+
+
+/*功能：设置当前时间和间隔时间
+* 1. 从本地存储获取开始时间
+* 2.将当前时间转化为特定日期格式
+* 3.计算间隔时间
+* 4.调用setElapsedTime()函数设置间隔时间
+*/
 const setCurrentTimeAndElapsedTime = (): void => {
   if (authStore.isConnected) {
     const startTime1 = authStore.testStartTime;
@@ -494,7 +509,7 @@ const setCurrentTimeAndElapsedTime = (): void => {
 };
 
 let intervalId: number = 0;
-//每隔一秒获取一次当前的时间
+//钩子函数，使得每隔一秒获取一次当前的时间
 onMounted(() => {
   intervalId = window.setInterval(setCurrentTimeAndElapsedTime, 1000);
 });

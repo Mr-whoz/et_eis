@@ -722,10 +722,12 @@ const fileDownloadUrls= ref<string[]>([]);//存储对应下载的url数组
 
 
 /*
-函数作用：
+函数作用：分管理员和普通用户，管理员能够查看所有文件列表，普通用户只能查看自己的文件列表
+函数返回值：将用户名作为键，文件列表作为值，添加到tempKeyFilesToDownload对象中
 1、获取读取列表的url 
 2、获取用户名和文件名的键值对tempKeyFilesToDownload   
-3、获取全部文件列表filesToDownload
+3、获取全部文件列表存储到数组filesToDownload
+----------------------需要注意后端是否有正确将数据存储到对应用户文件夹下
 */
 const getAllFileList = async ( ) => {
   // 获取文件列表之前初始化数据
@@ -795,7 +797,12 @@ const getAllFileList = async ( ) => {
   }
 }
 
- //日期检查函数，检查是否在时间范围内以及结束时间大于开始时间
+/*
+函数作用：筛选文件列表时调用的 日期检查函数，检查是否在时间范围内以及结束时间大于开始时间
+函数返回值：true/false
+*/
+
+ //
  const checkDateRange = () => {
   if (!startDate.value || !endDate.value) {
     ElMessage.error('请填写完整的开始时间和结束时间！');
@@ -811,9 +818,10 @@ const getAllFileList = async ( ) => {
 };
     
 /*
-函数作用：
-1、调用日期检查函数，确保选择的时间在时间范围内 
-2、根据选择的时间解析接收的filesToDownload文件名，并输出 符合时间范围的 filteredFiles 文件列表
+函数作用：筛选文件列表时先调用的checkDateRange函数，然后调用filterFilesByDate函数，根据选择的时间范围筛选文件列表
+1、跟模具选择的日期范围，转化为ISO 8601格式
+2、提取csv文件名称中的时间段----用于与当前选择过滤范围的 ISO 8601 格式的日期进行比较
+3、将筛选后的文件列表存储到fileDate数组中
 */
 
 const filterFilesByDate = (): void => {
@@ -842,6 +850,7 @@ const filterFilesByDate = (): void => {
 函数作用：
 1、调用getAllFileList();//等待获取tempKeyFilesToDownload、FilesToDownload的值
 2、遍历键值对{username:filename},生成下载url数组fileDownloadUrls
+函数返回值：fileDownloadUrls存储的是对应文件下载的url地址的数组
 */
 
 const fetchFileList = async (): Promise<void> => {
@@ -940,7 +949,7 @@ const exportAsTxt = (data: string[][], fileName: string): void => {
 
 
 /**
- * 批量下载功能，全部下载和按时间段下载再调用此功能
+ * 批量下载功能，全部下载和按时间段下载会调用此功能
  * @param files 传递文件名数组
  * @param format 传递导出格式
  */
@@ -968,8 +977,10 @@ const downloadFiles = async (files: string[], format: string) => {
 
 };
 
-// 全部下载导出功能实现，由于全部导出，直接将filesToDownload的完整数组传递过去
-//参数为导出格式类型，再传递给downloadFiles函数
+/**
+ * 函数作用：全部下载导出功能实现
+ * 参数：导出格式类型，再传递给downloadFiles函数
+  */   
 const downloadAll = async (format: string) => {
   await fetchFileList(); // 更新文件列表
   await downloadFiles(filesToDownload.value, format);
@@ -992,12 +1003,12 @@ const downloadByTime = async (format: string) => {
   await downloadFiles(filteredFiles.value, format);
 
 };
+
 /**
  * 函数作用：按选择下载
  * 1、选择的文件列表传递给downloadFiles函数进行下载和转换
  * @param format 导出格式
  */
-
     const downloadByChoice = async (format: string) => {
       await downloadFiles(selectChoiceFiles.value, format);
     }
@@ -1040,7 +1051,7 @@ const downloadByTime = async (format: string) => {
 
 //++++++++++++++++++++++++++++++++++++++++++++++数据导出功能结束++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++选择文件删除或者重命名开始++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// const deleteBaseUrl="http://192.168.137.99/delete/"// 文件删除基础 URLdeleteFileBrowser
+
 const deleteFileBrowser = ref<boolean>(false);    //数据导出的二次  确认/取消  信号
 const renameFileBrowser = ref<boolean>(false);    //重命名的二次  确认/取消  信号selectDeleteFiles
 const selectDeleteFiles = ref<string[]>([]);//选择删除的的文件列表
@@ -1155,7 +1166,6 @@ const confirmRenameFile = async () => {
           newFileName: newFileName.value,
           user: username, // 将匹配到的用户名填入 user 字段
         });
-
         // 可以在找到匹配文件后结束循环，只需要找到一个文件
         break;
       }
@@ -1210,6 +1220,7 @@ const FileFlowPrompt = ref<boolean>(false);
 const UpgradeConfirmation = ref<boolean>(false);
 const updating = ref<boolean>(false);
 const upgradeFailure = ref<boolean>(false);
+
 const handleFileChange = async (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
@@ -1236,6 +1247,7 @@ const handleFileChange = async (event: Event) => {
     }
   }
 };
+
 function escalationSignal () {
     if (authStore.websocket) {
     const func: { [key: string]: any } = {};
@@ -1261,10 +1273,7 @@ function escalationSignal () {
 //待完善
 
 
-
 /* *******************************设备校准 结束**************************************** */
-
-
 
 /* *******************************重启复位 开始**************************************** */
 // 控制对话框的显示状态

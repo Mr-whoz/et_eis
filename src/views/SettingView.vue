@@ -1329,6 +1329,14 @@ const adjustValueByType = (value: number, valueType: string): number => {
   }
 };
 
+/**
+ * 函数作用：将设置视图中选择的参数转化为相应的JSON格式
+ * 函数逻辑：
+ * 1、转化工作模式，根据选择的工作模式以及恒压恒流 为相应的json字符串
+ * 2、转化 电流峰值、 电压峰值、 功率峰值 为相应的json字符串
+ * 3、根据 stepMode.value 转化为不同的json字符串
+ * 3.2 、  Custommode和 liner 两种模式需要注意限制，不能超过41
+  */   
 const createSettingJson = (): string => {
   const jsonObject: { [key: string]: any } = {};
 
@@ -1498,6 +1506,14 @@ const createSettingJson = (): string => {
   return JSON.stringify(jsonObject);
 }; 
 
+
+/**
+ * 函数作用：点击开始测试时，触发的函数
+ * 函数逻辑：
+ * 1、将当前页面选择的testdata 的值传入 createSettingJson函数转化为所需的json协议
+ * 2、------------------------------------清空当前循环次数-----当前循环次数该功能还未完善，需要和fpga、嵌入式讨论具体怎么收发每轮完成时前端接收到的信号
+ * 3、设置时间戳，将时间戳存储到authStore.testStartTime中
+  */   
 const startTest =  (): void => {
   // authStore.currentPeak[]
 
@@ -1513,8 +1529,7 @@ const startTest =  (): void => {
     authStore.powerPeak = powerPeak.value;
   }
   authStore.workStatus = 'running';stepMode
-  // 调用 setStartWorkTime 清除并设置开始时间
-  //setStartWorkTime();
+ 
   // 清空当前循环次数
   authStore.currentCycle = 1;
   //获取开始测试的时间挫

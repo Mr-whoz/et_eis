@@ -683,7 +683,7 @@ const handleCsvAndTxt = async (file: File): Promise<void> => {
   const text: string = await file.text();
   parseString(text);
 };
-
+// 处理excel文件，接收类型：文件  将上传的文件解析为字符串
 const handleExcel = async (file: File): Promise<void> => {
   const data = await file.arrayBuffer();
   const workbook = XLSX.read(data, { type: "array" });
@@ -694,7 +694,7 @@ const handleExcel = async (file: File): Promise<void> => {
 };
 
 
-
+//解析字符串 可以解析csv、excel、txt文件转化为对象数组
 const parseString = (text: string): void => {
 
   Papa.parse(text, {
@@ -731,7 +731,7 @@ const parseString = (text: string): void => {
 
 };
 
-
+//根据奈奎斯特图的数据转化为波特图数据
 const computeBodePlot = (xData: number[], yData: number[], freData: number[]) => {
 
   const xBodeData: number[] = [];
@@ -1161,7 +1161,7 @@ const switchPlot = async (): Promise<void> => {
   }
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/*函数功能: 绑定点击事件，选中图表中的点能截获信息   在drawBodePlot等使用
+/*函数功能: 绑定点击事件，选中图表中的点能截获信息   选择奈奎斯特图的起始和终止点
 parm1:plotDiv:Plotly.Root 图表实例
 parm2:data:any[] 数据
 parm3:layout:Partial<Plotly.Layout> 布局
