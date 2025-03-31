@@ -61,7 +61,7 @@
             <el-button size="large"
                        style="color: white; background-color: blue; font-size: 2.5vh;"
                        type="danger"
-              >开始
+            >开始
             </el-button>
           </el-col>
         </el-row>
@@ -869,9 +869,9 @@ const currentUnitOption: Option[] = [
 ];
 
 const voltageUnitOption: Option[] = [
-  { value: "volt", label: "安/V" },
-  { value: "kilovolt", label: "千安/kV" },
-  { value: "millivolt", label: "毫安/mV" },
+  { value: "volt", label: "伏/V" },
+  { value: "kilovolt", label: "千伏/kV" },
+  { value: "millivolt", label: "毫伏/mV" },
 ];
 
 const unit = computed({
